@@ -12,21 +12,26 @@ using namespace std;
 class X {
 public:
     X()
-        : X(5) {
+        : X(5) 
+    {
     }
     X(size_t num)
-        : x_(num) {
+        : x_(num)
+    {
     }
     X(const X& other) = delete;
     X& operator=(const X& other) = delete;
-    X(X&& other) {
+    X(X&& other) 
+    {
         x_ = exchange(other.x_, 0);
     }
-    X& operator=(X&& other) {
+    X& operator=(X&& other) 
+    {
         x_ = exchange(other.x_, 0);
         return *this;
     }
-    size_t GetX() const {
+    size_t GetX() const 
+    {
         return x_;
     }
 

@@ -58,8 +58,9 @@ public:
         swap(tmp);
     }
 
-    SimpleVector(SimpleVector&& other) : data_(std::move(other.data_))
-    {         
+    SimpleVector(SimpleVector&& other) noexcept
+    {    
+        data_ = std::move(other.data_);
         size_ = std::exchange(other.size_, 0);
         capacity_ = std::exchange(other.capacity_, 0);
     }
@@ -78,7 +79,7 @@ public:
         return *this;
      }
 
-    SimpleVector& operator=(SimpleVector&& rhs)
+    SimpleVector& operator=(SimpleVector&& rhs) noexcept
     {        
         data_ = {};
         data_ = std::move(rhs.data_);
@@ -179,8 +180,6 @@ public:
             capacity_ = new_size;
         }
     }
-
-
 
     // Добавляет элемент в конец вектора
     // При нехватке места увеличивает вдвое вместимость вектора
@@ -350,7 +349,7 @@ inline bool operator==(const SimpleVector<Type>& lhs, const SimpleVector<Type>& 
 template <typename Type>
 inline bool operator!=(const SimpleVector<Type>& lhs, const SimpleVector<Type>& rhs)
 {
-    return !std::equal(lhs.begin(), lhs.begin() + lhs.GetSize(), rhs.begin(), rhs.begin() + rhs.GetSize());
+    return !(lhs == rhs);
 }
 
 template <typename Type>
@@ -363,25 +362,23 @@ inline bool operator<(const SimpleVector<Type>& lhs, const SimpleVector<Type>& r
 template <typename Type>
 inline bool operator<=(const SimpleVector<Type>& lhs, const SimpleVector<Type>& rhs)
 {
-    return !std::lexicographical_compare(lhs.begin(), lhs.begin() + lhs.GetSize(), rhs.begin(), rhs.begin() + rhs.GetSize())
-        || std::lexicographical_compare(lhs.begin(), lhs.begin() + lhs.GetSize(), rhs.begin(), rhs.begin() + rhs.GetSize());
+    return rhs >= lhs;
 }
 
 template <typename Type>
 inline bool operator>(const SimpleVector<Type>& lhs, const SimpleVector<Type>& rhs)
 {
-    return !std::lexicographical_compare(lhs.begin(), lhs.begin() + lhs.GetSize(), rhs.begin(), rhs.begin() + rhs.GetSize());
+    return rhs < lhs;
 }
 
 template <typename Type>
 inline bool operator>=(const SimpleVector<Type>& lhs, const SimpleVector<Type>& rhs)
 {
-    return !std::lexicographical_compare(lhs.begin(), lhs.begin() + lhs.GetSize(), rhs.begin(), rhs.begin() + rhs.GetSize());
+    return !(lhs < rhs);
 }
-
-
 
 ReserveCapacity Reserve(size_t capacity) 
 {
     return { static_cast<size_t>(capacity) };
 }
+
