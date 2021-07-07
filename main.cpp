@@ -21,11 +21,11 @@ public:
     }
     X(const X& other) = delete;
     X& operator=(const X& other) = delete;
-    X(X&& other) 
+    X(X&& other) noexcept
     {
         x_ = exchange(other.x_, 0);
     }
-    X& operator=(X&& other) 
+    X& operator=(X&& other) noexcept
     {
         x_ = exchange(other.x_, 0);
         return *this;
@@ -154,6 +154,7 @@ void TestNoncopiableErase() {
 
     auto it = v.Erase(v.begin());
     assert(it->GetX() == 1);
+    it = v.Erase(v.end() - 1);   
     cout << "Done!" << endl << endl;
 }
 

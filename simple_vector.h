@@ -235,10 +235,11 @@ public:
     // Возвращает итератор на вставленное значение
     // Если перед вставкой значения вектор был заполнен полностью,
     // вместимость вектора должна увеличиться вдвое, а для вектора вместимостью 0 стать равной 1
-    Iterator Insert(ConstIterator pos,   Type&& value) noexcept
-    {
-        const size_t in = pos - begin();        
+    Iterator Insert(ConstIterator pos,   Type&& value) 
+    {     
+        assert(pos >= begin() || pos < end()); 
 
+        const size_t in = pos - begin();
         if (capacity_ > size_)
         {
             std::copy_backward(std::make_move_iterator(begin() + in), std::make_move_iterator(begin() + size_), begin() + size_ +1);
@@ -266,7 +267,7 @@ public:
     Iterator Erase(ConstIterator pos)
     {
         assert(size_ != 0);
-        assert(pos != begin() + size_);
+        assert(pos != end() || pos != begin() - 1);       
 
         const size_t er = pos - begin();
         ArrayPtr<Type> temp (capacity_);          
@@ -279,10 +280,10 @@ public:
     }
 
     // "Удаляет" последний элемент вектора. Вектор не должен быть пустым
-    void PopBack() noexcept
+    void PopBack() 
     {
-        data_[size_ - 1] = 0;
-        --size_;
+        assert(size_ != 0);
+        --size_;       
     }
 
     // Обменивает значение с другим вектором
